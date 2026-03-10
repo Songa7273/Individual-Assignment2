@@ -1,0 +1,4 @@
+gradle.properties
+local.properties
+*.jks
+key.properties
