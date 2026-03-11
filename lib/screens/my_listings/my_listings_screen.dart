@@ -4,6 +4,7 @@ import '../../providers/listings_provider.dart';
 import '../../providers/auth_provider.dart';
 import '../../models/service_listing.dart';
 import '../../widgets/empty_state_widget.dart';
+import '../../utils/snackbar_helper.dart';
 import 'add_edit_listing_screen.dart';
 import '../detail/detail_screen.dart';
 
@@ -82,8 +83,9 @@ class _MyListingCard extends StatelessWidget {
               await provider.deleteListing(listing.id!);
               if (context.mounted) {
                 Navigator.pop(context);
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text('Listing deleted')),
+                SnackBarHelper.showSuccess(
+                  context,
+                  'Listing deleted successfully',
                 );
               }
             },

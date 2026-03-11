@@ -5,7 +5,10 @@
 /// Sends verification email upon successful registration.
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../providers/auth_provider.dart';import '../../utils/form_validators.dart';
+import '../../providers/auth_provider.dart';
+import '../../utils/form_validators.dart';
+import '../../utils/snackbar_helper.dart';
+
 class SignupScreen extends StatefulWidget {
   const SignupScreen({Key? key}) : super(key: key);
 
@@ -79,8 +82,9 @@ class _SignupScreenState extends State<SignupScreen> {
           );
         } else if (authProvider.errorMessage != null) {
           // Show error message if signup failed
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text(authProvider.errorMessage!)),
+          SnackBarHelper.showError(
+            context,
+            authProvider.errorMessage!,
           );
         }
       }

@@ -4,6 +4,7 @@ import '../../providers/listings_provider.dart';
 import '../../providers/auth_provider.dart';
 import '../../models/service_listing.dart';
 import '../../utils/form_validators.dart';
+import '../../utils/snackbar_helper.dart';
 
 class AddEditListingScreen extends StatefulWidget {
   final ServiceListing? listing;
@@ -77,12 +78,11 @@ class _AddEditListingScreenState extends State<AddEditListingScreen> {
       }
 
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(
-              widget.listing == null ? 'Listing created' : 'Listing updated',
-            ),
-          ),
+        SnackBarHelper.showSuccess(
+          context,
+          widget.listing == null 
+              ? 'Listing created successfully!' 
+              : 'Listing updated successfully!',
         );
         Navigator.pop(context);
       }
