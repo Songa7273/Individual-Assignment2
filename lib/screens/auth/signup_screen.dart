@@ -1,3 +1,8 @@
+/// Sign up screen for new user registration.
+/// 
+/// Allows users to create a new account with email and password.
+/// Validates email format, password strength (min 6 chars), and password confirmation.
+/// Sends verification email upon successful registration.
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../providers/auth_provider.dart';
@@ -10,24 +15,42 @@ class SignupScreen extends StatefulWidget {
 }
 
 class _SignupScreenState extends State<SignupScreen> {
+  /// Form key for validation
   final _formKey = GlobalKey<FormState>();
+  
+  /// Controller for email input field
   final _emailController = TextEditingController();
+  
+  /// Controller for password input field
   final _passwordController = TextEditingController();
+  
+  /// Controller for password confirmation field
   final _confirmPasswordController = TextEditingController();
+  
+  /// Whether password should be obscured (hidden)
   bool _obscurePassword = true;
+  
+  /// Whether confirm password should be obscured (hidden)
   bool _obscureConfirmPassword = true;
 
   @override
   void dispose() {
+    // Clean up controllers to prevent memory leaks
     _emailController.dispose();
     _passwordController.dispose();
     _confirmPasswordController.dispose();
     super.dispose();
   }
 
+  /// Handles the sign-up process.
+  /// 
+  /// Validates form fields, calls AuthProvider to create account,
+  /// and shows success dialog with verification instructions.
   Future<void> _handleSignup() async {
     if (_formKey.currentState!.validate()) {
       final authProvider = Provider.of<AuthProvider>(context, listen: false);
+      
+      // Attempt to create new user account
       bool success = await authProvider.signUp(
         _emailController.text.trim(),
         _passwordController.text,
@@ -35,6 +58,7 @@ class _SignupScreenState extends State<SignupScreen> {
 
       if (mounted) {
         if (success) {
+          // Show success dialog with verification instructions
           showDialog(
             context: context,
             builder: (context) => AlertDialog(
@@ -45,6 +69,7 @@ class _SignupScreenState extends State<SignupScreen> {
               actions: [
                 TextButton(
                   onPressed: () {
+                    // Return to login screen
                     Navigator.pop(context);
                     Navigator.pop(context);
                   },
@@ -54,6 +79,7 @@ class _SignupScreenState extends State<SignupScreen> {
             ),
           );
         } else if (authProvider.errorMessage != null) {
+          // Show error message if signup failed
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(content: Text(authProvider.errorMessage!)),
           );
@@ -78,6 +104,7 @@ class _SignupScreenState extends State<SignupScreen> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
+                  // Sign up icon
                   Icon(
                     Icons.person_add,
                     size: 80,
@@ -92,6 +119,8 @@ class _SignupScreenState extends State<SignupScreen> {
                         ),
                   ),
                   const SizedBox(height: 32),
+                  
+                  // Email input field with validation
                   TextFormField(
                     controller: _emailController,
                     keyboardType: TextInputType.emailAddress,
@@ -111,6 +140,8 @@ class _SignupScreenState extends State<SignupScreen> {
                     },
                   ),
                   const SizedBox(height: 16),
+                  
+                  // Password input field with strength validation
                   TextFormField(
                     controller: _passwordController,
                     obscureText: _obscurePassword,
@@ -140,6 +171,8 @@ class _SignupScreenState extends State<SignupScreen> {
                     },
                   ),
                   const SizedBox(height: 16),
+                  
+                  // Confirm password field with match validation
                   TextFormField(
                     controller: _confirmPasswordController,
                     obscureText: _obscureConfirmPassword,
