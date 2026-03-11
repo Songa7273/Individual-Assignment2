@@ -4,6 +4,7 @@ import 'dart:async';
 import '../../providers/listings_provider.dart';
 import '../../models/service_listing.dart';
 import '../../widgets/listing_skeleton.dart';
+import '../../widgets/error_retry_widget.dart';
 import '../detail/detail_screen.dart';
 
 class DirectoryScreen extends StatefulWidget {
@@ -100,6 +101,17 @@ class _DirectoryScreenState extends State<DirectoryScreen> {
       ),
       body: Consumer<ListingsProvider>(
         builder: (context, provider, child) {
+          // Show error widget with retry if there's an error
+          if (provider.errorMessage != null) {
+            return ErrorRetryWidget(
+              message: provider.errorMessage!,
+              onRetry: () {
+                provider.clearError();
+                provider.listenToAllListings();
+              },
+            );
+          }
+
           // Show loading skeletons while fetching data
           if (provider.isLoading) {
             return ListView.builder(
