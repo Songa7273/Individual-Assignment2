@@ -5,8 +5,7 @@
 /// Sends verification email upon successful registration.
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../providers/auth_provider.dart';
-
+import '../providers/auth_provider.dart';import '../../utils/form_validators.dart';
 class SignupScreen extends StatefulWidget {
   const SignupScreen({Key? key}) : super(key: key);
 
@@ -129,15 +128,7 @@ class _SignupScreenState extends State<SignupScreen> {
                       prefixIcon: Icon(Icons.email),
                       border: OutlineInputBorder(),
                     ),
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return 'Please enter your email';
-                      }
-                      if (!value.contains('@')) {
-                        return 'Please enter a valid email';
-                      }
-                      return null;
-                    },
+                    validator: FormValidators.validateEmail,
                   ),
                   const SizedBox(height: 16),
                   
@@ -149,6 +140,7 @@ class _SignupScreenState extends State<SignupScreen> {
                       labelText: 'Password',
                       prefixIcon: const Icon(Icons.lock),
                       border: const OutlineInputBorder(),
+                      helperText: 'At least 6 characters with letters and numbers',
                       suffixIcon: IconButton(
                         icon: Icon(
                           _obscurePassword ? Icons.visibility : Icons.visibility_off,
@@ -160,15 +152,7 @@ class _SignupScreenState extends State<SignupScreen> {
                         },
                       ),
                     ),
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return 'Please enter a password';
-                      }
-                      if (value.length < 6) {
-                        return 'Password must be at least 6 characters';
-                      }
-                      return null;
-                    },
+                    validator: FormValidators.validatePassword,
                   ),
                   const SizedBox(height: 16),
                   

@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import '../../providers/listings_provider.dart';
 import '../../providers/auth_provider.dart';
 import '../../models/service_listing.dart';
+import '../../utils/form_validators.dart';
 
 class AddEditListingScreen extends StatefulWidget {
   final ServiceListing? listing;
@@ -111,13 +112,9 @@ class _AddEditListingScreenState extends State<AddEditListingScreen> {
                 decoration: const InputDecoration(
                   labelText: 'Place/Service Name',
                   border: OutlineInputBorder(),
+                  helperText: 'At least 3 characters',
                 ),
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Please enter a name';
-                  }
-                  return null;
-                },
+                validator: FormValidators.validateName,
               ),
               const SizedBox(height: 16),
               DropdownButtonFormField<String>(
@@ -144,13 +141,9 @@ class _AddEditListingScreenState extends State<AddEditListingScreen> {
                 decoration: const InputDecoration(
                   labelText: 'Address',
                   border: OutlineInputBorder(),
+                  helperText: 'Complete street address',
                 ),
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Please enter an address';
-                  }
-                  return null;
-                },
+                validator: FormValidators.validateAddress,
               ),
               const SizedBox(height: 16),
               TextFormField(
@@ -159,13 +152,9 @@ class _AddEditListingScreenState extends State<AddEditListingScreen> {
                 decoration: const InputDecoration(
                   labelText: 'Contact Number',
                   border: OutlineInputBorder(),
+                  helperText: 'e.g., +250788123456',
                 ),
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Please enter a contact number';
-                  }
-                  return null;
-                },
+                validator: FormValidators.validatePhone,
               ),
               const SizedBox(height: 16),
               TextFormField(
@@ -174,13 +163,9 @@ class _AddEditListingScreenState extends State<AddEditListingScreen> {
                 decoration: const InputDecoration(
                   labelText: 'Description',
                   border: OutlineInputBorder(),
+                  helperText: 'At least 10 characters',
                 ),
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Please enter a description';
-                  }
-                  return null;
-                },
+                validator: FormValidators.validateDescription,
               ),
               const SizedBox(height: 16),
               Row(
@@ -192,16 +177,9 @@ class _AddEditListingScreenState extends State<AddEditListingScreen> {
                       decoration: const InputDecoration(
                         labelText: 'Latitude',
                         border: OutlineInputBorder(),
+                        helperText: '-90 to 90',
                       ),
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return 'Required';
-                        }
-                        if (double.tryParse(value) == null) {
-                          return 'Invalid';
-                        }
-                        return null;
-                      },
+                      validator: FormValidators.validateLatitude,
                     ),
                   ),
                   const SizedBox(width: 16),
@@ -212,16 +190,9 @@ class _AddEditListingScreenState extends State<AddEditListingScreen> {
                       decoration: const InputDecoration(
                         labelText: 'Longitude',
                         border: OutlineInputBorder(),
+                        helperText: '-180 to 180',
                       ),
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return 'Required';
-                        }
-                        if (double.tryParse(value) == null) {
-                          return 'Invalid';
-                        }
-                        return null;
-                      },
+                      validator: FormValidators.validateLongitude,
                     ),
                   ),
                 ],
