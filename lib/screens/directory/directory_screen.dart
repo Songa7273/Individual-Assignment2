@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../providers/listings_provider.dart';
 import '../../models/service_listing.dart';
+import '../../widgets/listing_skeleton.dart';
 import '../detail/detail_screen.dart';
 
 class DirectoryScreen extends StatelessWidget {
@@ -70,6 +71,15 @@ class DirectoryScreen extends StatelessWidget {
       ),
       body: Consumer<ListingsProvider>(
         builder: (context, provider, child) {
+          // Show loading skeletons while fetching data
+          if (provider.isLoading) {
+            return ListView.builder(
+              padding: const EdgeInsets.all(16.0),
+              itemCount: 5,
+              itemBuilder: (context, index) => const ListingSkeleton(),
+            );
+          }
+
           if (provider.allListings.isEmpty) {
             return RefreshIndicator(
               onRefresh: () async {
