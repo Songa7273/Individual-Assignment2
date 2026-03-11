@@ -71,25 +71,46 @@ class DirectoryScreen extends StatelessWidget {
       body: Consumer<ListingsProvider>(
         builder: (context, provider, child) {
           if (provider.allListings.isEmpty) {
-            return const Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Icon(Icons.search_off, size: 64, color: Colors.grey),
-                  SizedBox(height: 16),
-                  Text('No listings found', style: TextStyle(fontSize: 18)),
+            return RefreshIndicator(
+              onRefresh: () async {
+                // Refresh listings by re-listening
+                provider.listenToAllListings();
+                // Small delay to show refresh animation
+                await Future.delayed(const Duration(milliseconds: 500));
+              },
+              child: ListView(
+                children: const [
+                  SizedBox(height: 200),
+                  Center(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(Icons.search_off, size: 64, color: Colors.grey),
+                        SizedBox(height: 16),
+                        Text('No listings found', style: TextStyle(fontSize: 18)),
+                        SizedBox(height: 8),
+                        Text('Pull down to refresh', style: TextStyle(color: Colors.grey)),
+                      ],
+                    ),
+                  ),
                 ],
               ),
             );
           }
 
-          return ListView.builder(
-            padding: const EdgeInsets.all(16.0),
-            itemCount: provider.allListings.length,
-            itemBuilder: (context, index) {
-              final listing = provider.allListings[index];
-              return _ListingCard(listing: listing);
+          return RefreshIndicator(
+            onRefresh: () async {
+              provider.listenToAllListings();
+              await Future.delayed(const Duration(milliseconds: 500));
             },
+            child: ListView.builder(
+              padding: const EdgeInsets.all(16.0),
+              itemCount: provider.allListings.length,
+              itemBuilder: (context, index) {
+                final listing = provider.allListings[index];
+                return _ListingCard(listing: listing);
+              },
+            ),
           );
         },
       ),
