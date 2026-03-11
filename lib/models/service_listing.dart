@@ -1,13 +1,37 @@
+/// Data model representing a service listing in the Kigali Services Directory.
+/// 
+/// Each listing contains information about a service location including name,
+/// category, contact details, geographical coordinates, and metadata about
+/// who created it and when.
 class ServiceListing {
+  /// Unique identifier for the listing (Firestore document ID)
   final String? id;
+  
+  /// Name of the service or business
   final String name;
+  
+  /// Category of service (e.g., Hospital, Restaurant, Library)
   final String category;
+  
+  /// Physical address of the service
   final String address;
+  
+  /// Contact phone number for the service
   final String contactNumber;
+  
+  /// Detailed description of the service
   final String description;
+  
+  /// Latitude coordinate for map display
   final double latitude;
+  
+  /// Longitude coordinate for map display
   final double longitude;
+  
+  /// User ID of the person who created this listing
   final String createdBy;
+  
+  /// Timestamp when the listing was created
   final DateTime timestamp;
 
   ServiceListing({
@@ -23,6 +47,10 @@ class ServiceListing {
     required this.timestamp,
   });
 
+  /// Converts the ServiceListing object to a Map for Firestore storage.
+  /// 
+  /// Timestamp is converted to ISO 8601 string format for consistent storage.
+  /// The id field is not included as it's managed by Firestore.
   Map<String, dynamic> toMap() {
     return {
       'name': name,
@@ -37,6 +65,13 @@ class ServiceListing {
     };
   }
 
+  /// Creates a ServiceListing object from Firestore document data.
+  /// 
+  /// [id] The Firestore document ID
+  /// [map] The document data as a Map
+  /// 
+  /// Provides default values for missing fields to prevent null errors.
+  /// Converts numeric types to double for coordinate values.
   factory ServiceListing.fromMap(String id, Map<String, dynamic> map) {
     return ServiceListing(
       id: id,
@@ -52,6 +87,10 @@ class ServiceListing {
     );
   }
 
+  /// Creates a copy of this ServiceListing with optionally updated fields.
+  /// 
+  /// Useful for updating specific fields while keeping others unchanged.
+  /// Any null parameter will use the current value from this instance.
   ServiceListing copyWith({
     String? id,
     String? name,
