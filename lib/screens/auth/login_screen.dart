@@ -1,3 +1,8 @@
+/// Login screen for user authentication.
+/// 
+/// Allows users to sign in with email and password.
+/// Validates email format and password presence before attempting login.
+/// Shows error messages for failed login attempts.
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../providers/auth_provider.dart';
@@ -11,26 +16,41 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
+  /// Form key for validation
   final _formKey = GlobalKey<FormState>();
+  
+  /// Controller for email input field
   final _emailController = TextEditingController();
+  
+  /// Controller for password input field
   final _passwordController = TextEditingController();
+  
+  /// Whether password should be obscured (hidden)
   bool _obscurePassword = true;
 
   @override
   void dispose() {
+    // Clean up controllers to prevent memory leaks
     _emailController.dispose();
     _passwordController.dispose();
     super.dispose();
   }
 
+  /// Handles the login process.
+  /// 
+  /// Validates form fields, calls AuthProvider to sign in,
+  /// and displays error message if login fails.
   Future<void> _handleLogin() async {
     if (_formKey.currentState!.validate()) {
       final authProvider = Provider.of<AuthProvider>(context, listen: false);
+      
+      // Attempt to sign in with provided credentials
       bool success = await authProvider.signIn(
         _emailController.text.trim(),
         _passwordController.text,
       );
 
+      // Show error message if login failed
       if (mounted && !success && authProvider.errorMessage != null) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text(authProvider.errorMessage!)),
@@ -52,6 +72,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
+                  // App logo/icon
                   Icon(
                     Icons.location_city,
                     size: 80,
@@ -74,6 +95,8 @@ class _LoginScreenState extends State<LoginScreen> {
                         ),
                   ),
                   const SizedBox(height: 48),
+                  
+                  // Email input field with validation
                   TextFormField(
                     controller: _emailController,
                     keyboardType: TextInputType.emailAddress,
@@ -93,6 +116,8 @@ class _LoginScreenState extends State<LoginScreen> {
                     },
                   ),
                   const SizedBox(height: 16),
+                  
+                  // Password input field with toggle visibility
                   TextFormField(
                     controller: _passwordController,
                     obscureText: _obscurePassword,
