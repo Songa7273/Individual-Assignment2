@@ -1,12 +1,43 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'dart:async';
 import '../../providers/listings_provider.dart';
 import '../../models/service_listing.dart';
 import '../../widgets/listing_skeleton.dart';
 import '../detail/detail_screen.dart';
 
-class DirectoryScreen extends StatelessWidget {
+class DirectoryScreen extends StatefulWidget {
   const DirectoryScreen({Key? key}) : super(key: key);
+
+  @override
+  State<DirectoryScreen> createState() => _DirectoryScreenState();
+}
+
+class _DirectoryScreenState extends State<DirectoryScreen> {
+  /// Timer for debouncing search input
+  Timer? _debounceTimer;
+
+  /// Debounces search query to prevent excessive filtering.
+  /// 
+  /// Waits 300ms after user stops typing before applying filter.
+  void _onSearchChanged(String query) {
+    // Cancel existing timer
+    _debounceTimer?.cancel();
+    
+    // Create new timer
+    _debounceTimer = Timer(const Duration(milliseconds: 300), () {
+      if (mounted) {
+        Provider.of<ListingsProvider>(context, listen: false)
+            .setSearchQuery(query);
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    _debounceTimer?.cancel();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -32,9 +63,7 @@ class DirectoryScreen extends StatelessWidget {
                           borderSide: BorderSide.none,
                         ),
                       ),
-                      onChanged: (value) {
-                        provider.setSearchQuery(value);
-                      },
+                      onChanged: _onSearchChanged,
                     );
                   },
                 ),
