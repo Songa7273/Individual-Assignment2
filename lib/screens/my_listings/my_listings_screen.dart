@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import '../../providers/listings_provider.dart';
 import '../../providers/auth_provider.dart';
 import '../../models/service_listing.dart';
+import '../../widgets/empty_state_widget.dart';
 import 'add_edit_listing_screen.dart';
 import '../detail/detail_screen.dart';
 
@@ -18,17 +19,19 @@ class MyListingsScreen extends StatelessWidget {
       body: Consumer<ListingsProvider>(
         builder: (context, provider, child) {
           if (provider.userListings.isEmpty) {
-            return const Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Icon(Icons.location_off, size: 64, color: Colors.grey),
-                  SizedBox(height: 16),
-                  Text('No listings yet', style: TextStyle(fontSize: 18)),
-                  SizedBox(height: 8),
-                  Text('Tap + to add your first listing'),
-                ],
-              ),
+            return EmptyStateWidget(
+              icon: Icons.location_off,
+              title: 'No Listings Yet',
+              message: 'Start building your service directory by adding your first listing',
+              actionLabel: 'Add Your First Listing',
+              onActionPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const AddEditListingScreen(),
+                  ),
+                );
+              },
             );
           }
 
