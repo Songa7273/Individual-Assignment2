@@ -15,45 +15,6 @@ class MapViewScreen extends StatefulWidget {
 class _MapViewScreenState extends State<MapViewScreen> {
   GoogleMapController? _mapController;
   final LatLng _kigaliCenter = const LatLng(-1.9441, 30.0619);
-  Set<Marker> _markers = {};
-  ServiceListing? _selectedListing;
-
-  @override
-  void initState() {
-    super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      _updateMarkers();
-    });
-  }
-
-  void _updateMarkers() {
-    final provider = Provider.of<ListingsProvider>(context, listen: false);
-    final listings = provider.allListings;
-
-    setState(() {
-      _markers = listings.map((listing) {
-        return Marker(
-          markerId: MarkerId(listing.id ?? ''),
-          position: LatLng(listing.latitude, listing.longitude),
-          infoWindow: InfoWindow(
-            title: listing.name,
-            snippet: listing.category,
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => DetailScreen(listing: listing),
-                ),
-              );
-            },
-          ),
-          icon: BitmapDescriptor.defaultMarkerWithHue(
-            _getMarkerColor(listing.category),
-          ),
-        );
-      }).toSet();
-    });
-  }
 
   double _getMarkerColor(String category) {
     switch (category) {
@@ -84,14 +45,36 @@ class _MapViewScreenState extends State<MapViewScreen> {
       ),
       body: Consumer<ListingsProvider>(
         builder: (context, provider, child) {
-          _updateMarkers();
+          // Update markers based on current listings without setState
+          final listings = provider.allListings;
+          final markers = listings.map((listing) {
+            return Marker(
+              markerId: MarkerId(listing.id ?? ''),
+              position: LatLng(listing.latitude, listing.longitude),
+              infoWindow: InfoWindow(
+                title: listing.name,
+                snippet: listing.category,
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => DetailScreen(listing: listing),
+                    ),
+                  );
+                },
+              ),
+              icon: BitmapDescriptor.defaultMarkerWithHue(
+                _getMarkerColor(listing.category),
+              ),
+            );
+          }).toSet();
           
           return GoogleMap(
             initialCameraPosition: CameraPosition(
               target: _kigaliCenter,
               zoom: 12,
             ),
-            markers: _markers,
+            markers: markers,
             myLocationEnabled: true,
             myLocationButtonEnabled: true,
             mapType: MapType.normal,
